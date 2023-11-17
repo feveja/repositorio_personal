@@ -1,15 +1,3 @@
-#def sobreviviente(n,m):
-#    personas = list()
-#    for i in range(n):
-#        personas.append(i+1)
-#    print(personas)
-#    indice = 0 
-#    while len(personas)>1:
-#        indice = (indice + m) % len(personas)
-#        personas.pop(indice)
-#        
-#    return personas
-
 def sobreviviente(n,m):
     personas = list()
     for i in range(n):
