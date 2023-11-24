@@ -63,9 +63,9 @@ assert A.getInstitucion() == "Universidad de los Lagos"
 assert A.getCarrera() == "Ingeniería Civil en Informática"
 
 F = EstudianteEducacionMedia()
-F.setNombre("Antoine Briones")
-F.setInstitucion("Universidad de los Lagos")
+F.setNombre("Felipe Vera")
+F.setInstitucion("Liceo Bicentenario Carmela Carvajal de Prat")
 F.setCurso("Segundo Medio B")
-assert F.getNombre() == "Antoine Briones"
-assert F.getInstitucion() == "Universidad de los Lagos"
+assert F.getNombre() == "Felipe Vera"
+assert F.getInstitucion() == "Liceo Bicentenario Carmela Carvajal de Prat"
 assert F.getCurso() == "Segundo Medio B"
