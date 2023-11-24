@@ -21,7 +21,10 @@ class Cuenta:
 
     # Compara el saldo actual con el saldo actual de otra cuenta
     def compareTo(self, otra_cuenta):
-        return self.saldo - otra_cuenta.saldo
+        if self.saldo < 0 or self.saldo > 0:
+            return self.saldo - otra_cuenta
+        else:
+            return "0"
 
     # El saldo actual es aumentado por el monto ingresado
     def depositar(self, monto):
