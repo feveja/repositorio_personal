@@ -52,5 +52,11 @@ print(str(F))  # Salida: 31/05/2013
 G = F.siguiente()
 print(str(G))  # Salida: 01/06/2013
 
+H = Fecha("07/06/2013")
+print(str(H))  # Salida: 01/06/2013
+
+diferencia = H - F
+print(diferencia)  # Salida: 1
+
 diferencia = G - F
 print(diferencia)  # Salida: 1

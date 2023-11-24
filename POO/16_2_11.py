@@ -17,7 +17,6 @@ class Conjunto:
         nuevo_conjunto = Conjunto(list(conjunto_universo.elementos.difference(self.elementos)))
         return nuevo_conjunto
 
-# Ejemplo de uso:
 conjunto1 = Conjunto([1, 2, 3, 4, 5])
 conjunto2 = Conjunto([4, 5, 6, 7, 8])
 
