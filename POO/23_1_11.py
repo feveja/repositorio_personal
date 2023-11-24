@@ -15,7 +15,7 @@ class Cuenta:
     def getnumero(self):
         return self.numero
 
-    # Imprime el numero de cuenta y su saldo actual
+    # Imprime el número de cuenta y su saldo actual
     def __str__(self):
         return f"cuenta={self.numero},saldo={self.saldo}"
 
@@ -39,13 +39,19 @@ class Cuenta:
 # Clase Cuenta1(Cuenta)
 # Hereda todos los atributos de la clase madre
 class Cuenta1(Cuenta):
+
     # El saldo actual es reducido por el monto ingresado, sin restricciones
     def girar(self, monto):
         self.saldo -= monto
-        
-c= Cuenta("1",100)
-assert c.getnumero()=="1"
-assert c.getsaldo()==100
-B = Cuenta1("1",200)
+
+
+c = Cuenta("1", 100)
+assert c.getnumero() == "1"
+assert c.getsaldo() == 100
+assert c.girar(200) == False
+
+B = Cuenta1("1", 200)
 B.girar(300)
-assert B.getsaldo()== -100
+assert B.getsaldo() == -100
+
+assert c.compareTo(B) == 200
