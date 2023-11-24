@@ -58,5 +58,4 @@ assert c.girar(200) == False
 B = Cuenta1("1", 200)
 B.girar(300)
 assert B.getsaldo() == -100
-
 assert c.compareTo(B) == 200
