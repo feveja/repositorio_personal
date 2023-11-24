@@ -8,10 +8,12 @@ class Cuenta:
         self.saldo = int(saldo)
 
     # Imprime el saldo actual de la cuenta
+    # DA ERROR, cuando la función se llama def saldo(self): ... porque el nombre se "solapa" con el constructor
     def getsaldo(self):
         return self.saldo
 
-    # Imprime el numero de cuenta
+    # Imprime el número de cuenta
+    # DA ERROR, cuando la función se llama def numero(self): ... porque el nombre se "solapa" con el constructor
     def getnumero(self):
         return self.numero
 
