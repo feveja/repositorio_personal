@@ -1,4 +1,9 @@
+#Libro: 
+#atributos: titulo, autor, genero, precio
+#metodos: mostrar_info
+#crear instancia de la clase
 class Libro:
+
     def __init__(self, titulo, autor, genero, precio):
         self.titulo = titulo
         self.autor = autor

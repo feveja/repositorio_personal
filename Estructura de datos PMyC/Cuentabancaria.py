@@ -1,19 +1,26 @@
+#CuentaBancaria:
+#Atributos: titular, saldo
+#Metodos: depositar, retirar, consultar_saldo
+#Crear una instancia d-e la clase CuentaBancaria,Deposite,Retire,Consultesaldo
 class CuentaBancaria:
     def __init__(self, titular, saldo_inicial=0):
         self.titular = titular
         self.saldo = saldo_inicial
-    
+    #depositar: int -> str
+    #Obj: deposita la cantidad indicada en el saldo
     def depositar(self, cantidad):
         self.saldo += cantidad
         return f"Depósito de ${cantidad} realizado. Nuevo saldo: ${self.saldo}"
-    
+    #retirar: int -> str
+    #Obj: retira la cantidad indicada en el saldo
     def retirar(self, cantidad):
         if cantidad <= self.saldo:
             self.saldo -= cantidad
             return f"Retiro de ${cantidad} realizado. Nuevo saldo: ${self.saldo}"
         else:
             return "Fondos insuficientes."
-    
+    #consultar_saldo: -> str
+    #Obj: muestra el saldo
     def consultar_saldo(self):
         return f"Saldo disponible: ${self.saldo}"
 
