@@ -54,6 +54,7 @@ class RegistroAlumnos:
             actual = actual.siguiente
         print("Alumno no encontrado.")
 
+
 # Crear instancias de alumnos
 registro_alumnos = RegistroAlumnos()
 
