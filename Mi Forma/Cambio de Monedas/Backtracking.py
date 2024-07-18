@@ -6,7 +6,7 @@ def cambio_monedas_backtracking(monedas, cantidad):
     def backtrack(remain, path, index): 
         if remain == 0: # Si la cantidad actual es 0
             soluciones.append(path) # Retorna la lista de monedas
-            return # Retorna la lista de monedas
+            return # Retorna la lista de monedas    
         for i in range(index, len(monedas)): # Si la cantidad actual es negativa o se ha alcanzado el final de la lista de monedas
             if monedas[i] <= remain: # Si la moneda actual es menor o igual que la cantidad restante
                 backtrack(remain - monedas[i], path + [monedas[i]], i) # Tomar la moneda actual
