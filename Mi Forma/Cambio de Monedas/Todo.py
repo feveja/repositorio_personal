@@ -1,6 +1,11 @@
-import heapq,time,tracemalloc
+import heapq
+import time
+import tracemalloc
+
 def cambio_monedas_greedy(monedas, cantidad):
-    # Ordenamos las monedas en orden descendente
+    """
+    Implementa el algoritmo voraz para el problema del cambio de monedas.
+    """
     monedas.sort(reverse=True)
     resultado = []
     for moneda in monedas:
@@ -10,11 +15,11 @@ def cambio_monedas_greedy(monedas, cantidad):
     if cantidad != 0:
         return "No se puede dar el cambio exacto con las monedas disponibles"
     return resultado
-monedas = [500, 100, 50, 10, 5, 1]
-cantidad = 879
-print(f"Algoritmo Voraz: {cambio_monedas_greedy(monedas, cantidad)}")
 
 def cambio_monedas_dp(monedas, cantidad):
+    """
+    Implementa el algoritmo de programación dinámica para el problema del cambio de monedas.
+    """
     max_valor = float('inf')
     dp = [0] + [max_valor] * cantidad
     for i in range(1, cantidad + 1):
@@ -31,12 +36,11 @@ def cambio_monedas_dp(monedas, cantidad):
                 cantidad -= moneda
                 break
     return resultado
-monedas = [500, 100, 50, 10, 5, 1]
-cantidad = 879
-# Prueba de la programación dinámica
-print(f"Programación Dinámica: {cambio_monedas_dp(monedas, cantidad)}")
 
 def cambio_monedas_backtracking(monedas, cantidad):
+    """
+    Implementa el algoritmo de vuelta atrás para el problema del cambio de monedas.
+    """
     def backtrack(remain, path, index):
         if remain == 0:
             soluciones.append(path)
@@ -52,12 +56,10 @@ def cambio_monedas_backtracking(monedas, cantidad):
         return "No se puede dar el cambio exacto con las monedas disponibles"
     return min(soluciones, key=len)
 
-# Prueba del algoritmo de vuelta atrás
-monedas = [500, 100, 50, 10, 5, 1]
-cantidad = 879
-print(f"Vuelta Atrás: {cambio_monedas_backtracking(monedas, cantidad)}")
-
 def cambio_monedas_branch_and_bound(monedas, cantidad):
+    """
+    Implementa el algoritmo de ramificación y poda para el problema del cambio de monedas.
+    """
     class Nodo:
         def __init__(self, nivel, acumulado, restante, camino):
             self.nivel = nivel
@@ -66,17 +68,6 @@ def cambio_monedas_branch_and_bound(monedas, cantidad):
             self.camino = camino
         def __lt__(self, otro):
             return self.restante < otro.restante
-
-    def bound(nodo):
-        if nodo.restante == 0:
-            return nodo.acumulado
-        for moneda in monedas[nodo.nivel:]:
-            if nodo.restante >= moneda:
-                nodo.restante -= moneda
-                nodo.acumulado += 1
-            if nodo.restante == 0:
-                break
-        return nodo.acumulado
 
     monedas.sort(reverse=True)
     nodo_inicial = Nodo(0, 0, cantidad, [])
@@ -102,14 +93,10 @@ def cambio_monedas_branch_and_bound(monedas, cantidad):
         return "No se puede dar el cambio exacto con las monedas disponibles"
     return mejor_camino
 
-# Prueba de ramificación y poda
-monedas = [500, 100, 50, 10, 5, 1]
-cantidad = 879
-print(f"Ramificación y Poda: {cambio_monedas_branch_and_bound(monedas, cantidad)}")
-
-
-# Función para ejecutar y medir rendimiento
 def medir_rendimiento(func, *args):
+    """
+    Mide el rendimiento de una función en términos de tiempo y memoria.
+    """
     tracemalloc.start()
     inicio = time.time()
     resultado = func(*args)
@@ -148,5 +135,3 @@ for nombre, valores in resultados.items():
     print(f"  Promedio de tiempo: {sum(tiempos) / len(tiempos):.6f} segundos")
     print(f"  Promedio de memoria: {sum(memorias) / len(memorias)} bytes")
     print()
-
-medir_rendimiento(cambio_monedas_branch_and_bound, monedas, cantidad)
