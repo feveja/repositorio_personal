@@ -1,49 +1,43 @@
-import heapq
+def coin_change(coins, amount):
+    # Estimación de la cantidad mínima de monedas (no utilizada en el algoritmo)
+    def estimate(coins, amount):
+        return amount // coins[-1]
 
-def cambio_monedas_branch_and_bound(monedas, cantidad):
-    class Nodo:
-        def __init__(self, nivel, acumulado, restante, camino):
-            self.nivel = nivel
-            self.acumulado = acumulado
-            self.restante = restante
-            self.camino = camino
-        def __lt__(self, otro):
-            return self.restante < otro.restante
+    # Función principal de Ramificación y Poda
+    def branch_and_bound(coins, amount, current_sum, index, count):
+        nonlocal result
 
-    def bound(nodo):
-        if nodo.restante == 0:
-            return nodo.acumulado
-        for moneda in monedas[nodo.nivel:]:
-            if nodo.restante >= moneda:
-                nodo.restante -= moneda
-                nodo.acumulado += 1
-            if nodo.restante == 0:
-                break
-        return nodo.acumulado
+        # Si la suma actual es igual al monto deseado, actualizar el resultado mínimo
+        if current_sum == amount:
+            result = min(result, count)
+            return
 
-    monedas.sort(reverse=True)
-    nodo_inicial = Nodo(0, 0, cantidad, [])
-    cola = [nodo_inicial]
-    heapq.heapify(cola)
-    min_acumulado = float('inf')
-    mejor_camino = []
+        # Si el índice ha alcanzado la longitud de la lista de monedas, retornar
+        if index == len(coins):
+            return
 
-    while cola:
-        nodo_actual = heapq.heappop(cola)
-        if nodo_actual.restante == 0:
-            if nodo_actual.acumulado < min_acumulado:
-                min_acumulado = nodo_actual.acumulado
-                mejor_camino = nodo_actual.camino
-        elif nodo_actual.nivel < len(monedas):
-            for i in range(nodo_actual.nivel, len(monedas)):
-                nueva_restante = nodo_actual.restante - monedas[i]
-                if nueva_restante >= 0:
-                    nuevo_nodo = Nodo(i, nodo_actual.acumulado + 1, nueva_restante, nodo_actual.camino + [monedas[i]])
-                    if nuevo_nodo.acumulado + nueva_restante // monedas[i] < min_acumulado:
-                        heapq.heappush(cola, nuevo_nodo)
-    if not mejor_camino:
-        return "No se puede dar el cambio exacto con las monedas disponibles"
-    return mejor_camino
+        coin = coins[index]
+        # Calcular la cantidad máxima de monedas de este valor que se pueden usar
+        max_coins = (amount - current_sum) // coin
+        for i in range(max_coins, -1, -1):
+            # Poda: si el conteo actual más la cantidad de monedas consideradas es menor que el resultado
+            if count + i < result:
+                branch_and_bound(coins, amount, current_sum + i * coin, index + 1, count + i)
+
+    # Ordenar las monedas en orden descendente
+    coins.sort(reverse=True)
+    result = float('inf')
+    # Llamar a la función de Ramificación y Poda
+    branch_and_bound(coins, amount, 0, 0, 0)
+    return result
+
+# Definir el conjunto de monedas y la cantidad deseada
+coins = [500, 100, 50, 10, 5, 1]
+amount = 2000
+
+# Encontrar el número mínimo de monedas usando Ramificación y Poda
+min_coins = coin_change(coins, amount)
+print("Número mínimo de monedas necesarias:", min_coins)
 
 # Prueba de ramificación y poda
-print(f"Ramificación y Poda: {cambio_monedas_branch_and_bound(monedas, cantidad)}")
+print(f"Ramificación y Poda: {coin_change(coins, amount)}")
