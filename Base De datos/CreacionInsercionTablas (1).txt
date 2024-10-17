@@ -1,0 +1,412 @@
+--- Creacion de la tabla Prevision con su respectiva clave primaria (nombre)
+create table Prevision(
+    nombre varchar(20),
+    tipo varchar(20),
+    primary key (nombre)
+);
+
+--- Creacion de la tabla Direccion con su respectiva clave primaria (codigopostal)
+create table Direccion(
+    codigopostal integer,
+    calle varchar(255),
+    numero integer,
+    comuna varchar(255),
+    primary key (codigopostal)
+);
+
+--- Creacion de la tabla Telefono con su respectiva clave primaria (codigo)
+create table Telefono(
+    codigo integer,
+    numero bigint,
+    primary key (codigo)
+);
+
+--- Creacion de la tabla Tiene con su respectiva clave primaria (runpaciente,codigotelefono) y 
+--- sus claves foraneas (codigodireccion,codigotelefono)
+create table Tiene(
+    runpaciente varchar(10),
+    codigotelefono integer,
+    codigodireccion integer,
+    primary key (runpaciente,codigotelefono),
+    foreign key (codigodireccion) references Direccion(codigopostal) on delete cascade on update cascade,
+    foreign key (codigotelefono) references Telefono(codigo) on delete cascade on update cascade
+);
+
+--- Creacion de la tabla Medico con su respectiva clave primaria (run)
+create table Medico(
+    run varchar(10),
+    fechanacimiento date,
+    aniosejerciendo integer,
+    nombre varchar(20),
+    apellido varchar(20),
+    primary key (run)
+);
+
+--- Creacion de la tabla Prevision con su respectiva clave primaria (run) y sus claves 
+--- foraneas (nombreprevision, runmedico)
+create table Paciente(
+    run varchar(10),
+    fechanacimiento date,
+    correo varchar(255),
+    nombre varchar(20),
+    apellido varchar(20),
+    fechainicioacargo date,
+    fechaterminoacargo date,
+    nombreprevision varchar(20),
+    runmedico varchar(10),
+    primary key (run),
+    foreign key (nombreprevision) references Prevision(nombre) on delete cascade on update cascade,
+    foreign key (runmedico) references Medico(run) on delete cascade on update cascade
+);
+
+--- Creacion de la tabla Especialidad con su respectiva clave primaria (nombre)
+create table Especialidad(
+    nombre varchar(255),
+    primary key (nombre)
+);
+
+--- Creacion de la tabla Posee con su respectiva clave primaria compuesta (runmedico,nombreespecialidad) 
+--- que a su vez son atributos foraneos
+create table Posee(
+    runmedico varchar(10),
+    nombreespecialidad varchar(255),
+    primary key (runmedico,nombreespecialidad),
+    foreign key (nombreespecialidad) references Especialidad(nombre),
+    foreign key (runmedico) references Medico(run)
+);
+
+--- Creacion de la tabla Receta con su respectiva clave primaria (codigo) y sus 
+--- atributos foraneos (runmedico,runpaciente)
+create table Receta(
+    codigo integer,
+    fecha date,
+    texto varchar(255),
+    runpaciente varchar(10),
+    runmedico varchar(10),
+    primary key (codigo),
+    foreign key (runmedico) references Medico(run) on delete cascade on update cascade,
+    foreign key (runpaciente) references Paciente(run) on delete cascade on update cascade
+);
+
+--- Creacion de la tabla EmpresaFarmaceutica con su respectiva clave primaria (codigo)
+create table EmpresaFarmaceutica(
+    codigo integer,
+    nombre varchar(255),
+    telefono bigint,
+    primary key (codigo)
+);
+
+--- Creacion de la tabla Medicamento con su respectiva clave primaria (nombrecomercial) y su atributo 
+--- foraneo (codigoefarmaceutica)
+create table Medicamento(
+    nombrecomercial varchar(30),
+    formula varchar(255),
+    codigoefarmaceutica integer,
+    primary key (nombrecomercial),
+    foreign key (codigoefarmaceutica) references EmpresaFarmaceutica(codigo) on delete cascade on update cascade    
+);
+
+--- Creacion de la tabla Contiene con su respectiva clave primaria compuesta (codigoreceta,nombrecomermed) que
+--- a su vez seran claves foraneas
+create table Contiene(
+    codigoreceta integer,
+    nombrecomermed varchar(30),
+    primary key (codigoreceta,nombrecomermed),
+    foreign key (codigoreceta) references Receta(codigo) on delete cascade on update cascade,
+    foreign key (nombrecomermed) references Medicamento(nombrecomercial) on delete cascade on update cascade
+);
+
+--- Creacion de la tabla Comprar con su respectiva clave primaria compuesta (runpaciente,nombrecomermed) que 
+--- a su vez seran claves foraneas
+create table Comprar(
+    runpaciente varchar(10),
+    nombrecomermed varchar(30),
+    primary key (runpaciente,nombrecomermed),
+    foreign key (nombrecomermed) references Medicamento(nombrecomercial) on delete cascade on update cascade,
+    foreign key (runpaciente) references Paciente(run) on delete cascade on update cascade
+);
+
+--- Creacion de la tabla Farmacia con su respectiva clave primaria (codigo)
+create table Farmacia(
+    codigo integer,
+    nombre varchar(50),
+    telefono bigint,
+    direccion varchar(255),
+    primary key (codigo)
+);
+
+--- Creacion de la tabla ExisteEn con su respectiva clave primaria compuesta (nombrecomermed, codigofarmacia) que a su vez
+--- son claves foraneas
+create table ExisteEn(
+    nombrecomermed varchar(30),
+    codigofarmacia integer,
+    preciomed integer,
+    cantidadmed integer,
+    primary key (nombrecomermed, codigofarmacia),
+    foreign key (codigofarmacia) references Farmacia(codigo) on delete cascade on update cascade,
+    foreign key (nombrecomermed) references Medicamento(nombrecomercial) on delete cascade on update cascade
+);
+
+--- Creacion de la tabla Supervisor con su respectiva clave primaria (run)
+create table Supervisor(
+    run varchar(10),
+    nombre varchar(20),
+    apellido varchar(20),
+    primary key (run)
+);
+
+--- Creacion de la tabla FechaSup con su clave primaria y que a su vez es foranea (runsupervisor)
+create table FechaSup(
+    runsupervisor varchar(10),
+    fechainiciosupervision date,
+    fechaterminosupervision date,
+    primary key (runsupervisor),
+    foreign key (runsupervisor) references Supervisor(run) on delete cascade on update cascade 
+);
+
+--- Creacion de la tabla Contrato con su respectiva clave primaria (codigocontrato) y sus
+--- claves foraneas (codigofarmacia,codigoefarmaceutica,runsupervisor)
+create table Contrato(          
+    codigocontrato integer,
+    fechainicio date,
+    fechatermino date,
+    contenidocontrato text,
+    codigoefarmaceutica integer,
+    codigofarmacia integer,
+    runsupervisor varchar(10),
+    primary key (codigocontrato),
+    foreign key (codigoefarmaceutica) references EmpresaFarmaceutica(codigo) on delete cascade on update cascade,
+    foreign key (codigofarmacia) references Farmacia(codigo) on delete cascade on update cascade,
+    foreign key (runsupervisor) references FechaSup(runsupervisor) on delete cascade on update cascade
+);
+
+-- Insertando datos en la tabla Prevision
+INSERT INTO Prevision (nombre, tipo) VALUES
+('Fonasa', 'Público'),
+('Banmédica', 'Isapre'),
+('Consalud', 'Isapre'),
+('Colmena Golden Cross', 'Isapre'),
+('Vida Tres', 'Isapre'),
+('Cruz Blanca', 'Isapre'),
+('Nueva Masvida', 'Isapre');
+
+-- Insertando datos en la tabla Direccion
+INSERT INTO Direccion (codigopostal,calle, numero, comuna) VALUES
+(5692748 ,'Av. Apoquindo', 5678, 'Las Condes'),
+(5692765 ,'Calle San Martín', 4321, 'Ñuñoa'),
+(5692481 ,'Av. Providencia', 1234, 'Providencia'),
+(5692273 ,'Calle Maipú', 987, 'Maipú'),
+(5692152 ,'Av. Los Leones', 246, 'Providencia'),
+(5692756 ,'Calle Alameda', 13579, 'Santiago'),
+(5692910 ,'Av. Manuel Montt', 9876, 'Providencia'),
+(5692002 ,'Calle Irarrázaval', 5432, 'Ñuñoa'),
+(5692011 ,'Calle Las Rejas', 456, 'Maipú'),
+(5692483 ,'Av. Libertador Bernardo O''Higgins', 987, 'Santiago');
+
+-- Insertando datos en la tabla Telefono
+INSERT INTO Telefono (codigo, numero) VALUES
+(1, 56912345678),
+(2, 56923456789),
+(3, 56934567890),
+(4, 56945678901),
+(5, 56956789012),
+(6, 56967890123),
+(7, 56978901234),
+(8, 56989012345),
+(9, 56990123456),
+(10, 56901234567);
+
+-- Insertando datos en la tabla Medico
+INSERT INTO Medico (run, fechanacimiento, aniosejerciendo, nombre, apellido) VALUES
+('17302688-9', '1975-05-10', 15, 'Pedro', 'Gonzalez'),
+('16597357-7', '1980-08-20', 10, 'Maria', 'Lopez'),
+('17336583-7', '1985-02-15', 8, 'Juan', 'Martinez'),
+('19464093-5', '1990-11-30', 5, 'Ana', 'Sanchez'),
+('14719610-5', '1970-04-25', 25, 'Carlos', 'Rodriguez'),
+('16786556-9', '1982-07-12', 12, 'Laura', 'Hernandez'),
+('17742953-8', '1978-09-05', 18, 'Jose', 'Perez'),
+('15768396-9', '1965-12-22', 30, 'Luis', 'Gomez'),
+('17054607-5', '1972-03-18', 20, 'Elena', 'Fernandez'),
+('17462754-1', '1977-06-08', 22, 'Mario', 'Diaz');
+
+-- Insertando datos en la tabla Especialidad
+INSERT INTO Especialidad (nombre) VALUES
+('Pediatría'),
+('Cardiología'),
+('Ginecología'),
+('Neurología'),
+('Oncología'),
+('Psiquiatría'),
+('Dermatología'),
+('Traumatología'),
+('Endocrinología'),
+('Oftalmología');
+
+-- Insertando datos en la tabla EmpresaFarmaceutica
+INSERT INTO EmpresaFarmaceutica (codigo, nombre, telefono) VALUES
+(1, 'Pfizer', 56978901234),
+(2, 'Roche', 56945678901),
+(3, 'Novartis', 56923456789),
+(4, 'Merck', 56989012345),
+(5, 'Johnson & Johnson', 56967890123),
+(6, 'Bayer', 56934567890),
+(7, 'Sanofi', 56956789012),
+(8, 'GSK', 56990123456),
+(9, 'AbbVie', 56901234567),
+(10, 'AstraZeneca', 56912345678);
+
+-- Insertando datos en la tabla Farmacia
+INSERT INTO Farmacia (codigo, nombre, telefono, direccion) VALUES
+(1, 'Farmacia Cruz Verde', 56911223344, 'Av. Providencia 1234, Providencia'),
+(2, 'Farmacia Ahumada', 56922334455, 'Av. Apoquindo 5678, Las Condes'),
+(3, 'Farmacia Salcobrand', 56933445566, 'Calle San Martín 4321, Ñuñoa'),
+(4, 'Farmacia del Dr. Simi', 56944556677, 'Calle Maipú 987, Maipú'),
+(5, 'Farmacia Independencia', 56955667788, 'Av. Los Leones 246, Providencia'),
+(6, 'Farmacia San Jorge', 56966778899, 'Calle Alameda 13579, Santiago'),
+(7, 'Farmacia La Reina', 56977889900, 'Av. Manuel Montt 9876, Providencia'),
+(8, 'Farmacia Las Condes', 56988990011, 'Calle Irarrázaval 5432, Ñuñoa'),
+(9, 'Farmacia Santiago', 56999001122, 'Calle Las Rejas 456, Maipú'),
+(10, 'Farmacia Central', 56900011223, 'Av. Libertador Bernardo O''Higgins 987, Santiago');
+
+-- Insertando datos en la tabla Supervisor
+INSERT INTO Supervisor (run, nombre, apellido) VALUES
+('13210987-6', 'Juan', 'González'),
+('18901234-5', 'María', 'López'),
+('19890123-4', 'Pedro', 'Martínez'),
+('18765432-0', 'Ana', 'Sánchez'),
+('18987654-3', 'Carlos', 'Rodríguez'),
+('14567890-1', 'Laura', 'Hernández'),
+('18765432-1', 'José', 'Pérez'),
+('19876543-2', 'Luis', 'Gómez'),
+('15678901-7', 'Elena', 'Fernández'),
+('12345678-9', 'Mario', 'Díaz');
+
+-- Insertando datos en la tabla Paciente
+INSERT INTO Paciente (run, fechanacimiento, correo, nombre, apellido,fechainicioacargo, fechaterminoacargo, nombreprevision, runmedico) VALUES
+('16109196-0', '1980-01-15', 'juan@gmail.com', 'Juan', 'Pérez', '2020-01-01', '2020-12-31', 'Banmédica', '17302688-9'),
+('23456789-0', '1995-03-20', 'ana@hotmail.com', 'Ana', 'Soto', '2021-02-01', '2021-12-31', 'Fonasa', '16597357-7'),
+('15567890-1', '1982-07-10', 'carlos@yahoo.com', 'Carlos', 'Ruiz', '2022-03-01', '2022-12-31', 'Colmena Golden Cross', '17336583-7'),
+('15678901-2', '1978-09-25', 'laura@gmail.com', 'Laura', 'Torres', '2023-04-01', '2023-12-31', 'Consalud', '19464093-5'),
+('16789012-3', '1965-12-05', 'maria@gmail.com', 'María', 'Rodríguez', '2024-05-01', '2024-12-31', 'Vida Tres', '14719610-5'),
+('17890123-4', '1990-04-30', 'pedro@hotmail.com', 'Pedro', 'Gómez', '2025-06-01', '2025-12-31', 'Cruz Blanca', '16786556-9'),
+('18901234-8', '1983-10-15', 'luis@yahoo.com', 'Luis', 'Torres', '2026-07-01', '2026-12-31', 'Nueva Masvida', '17742953-8'),
+('19012345-6', '1970-03-20', 'elena@gmail.com', 'Elena', 'Díaz', '2027-08-01', '2027-12-31', 'Nueva Masvida', '15768396-9'),
+('10129156-9', '1975-08-10', 'jose@hotmail.com', 'José', 'López', '2028-09-01', '2028-12-31', 'Colmena Golden Cross', '17054607-5'),
+('15264567-8', '1988-11-20', 'mario@yahoo.com', 'Mario', 'Martínez', '2029-10-01', '2029-12-31', 'Vida Tres', '17462754-1');
+
+-- Insertando datos en la tabla Posee
+INSERT INTO Posee (runmedico, nombreespecialidad) VALUES
+('17302688-9', 'Pediatría'),
+('16597357-7', 'Cardiología'),
+('17336583-7', 'Ginecología'),
+('19464093-5', 'Neurología'),
+('14719610-5', 'Oncología'),
+('16786556-9', 'Psiquiatría'),
+('17742953-8', 'Dermatología'),
+('15768396-9', 'Traumatología'),
+('17054607-5', 'Endocrinología'),
+('17462754-1', 'Oftalmología');
+
+-- Insertando datos en la tabla Tiene
+INSERT INTO Tiene (runpaciente, codigotelefono,codigodireccion) VALUES
+('16109196-0', 1, 5692748),
+('23456789-0', 2, 5692765),
+('15567890-1', 3, 5692481),
+('15678901-2', 4, 5692273),
+('16789012-3', 5, 5692152),
+('17890123-4', 6, 5692756),
+('18901234-8', 7, 5692910),
+('19012345-6', 8, 5692002),
+('10129156-9', 9, 5692011),
+('15264567-8', 10, 5692483);
+
+-- Insertando datos en la tabla Receta
+INSERT INTO Receta (codigo, fecha, texto, runpaciente, runmedico) VALUES
+(1, '2024-01-10', 'Tomar una pastilla cada 8 horas', '16109196-0', '17302688-9'),
+(2, '2024-02-15', 'Aplicar crema en la zona afectada', '23456789-0', '16597357-7'),
+(3, '2024-03-20', 'Tomar una cápsula antes de dormir', '15567890-1', '17336583-7'),
+(4, '2024-04-25', 'Inyectar una dosis cada semana', '15678901-2', '19464093-5'),
+(5, '2024-05-30', 'Tomar una cucharadita cada 12 horas', '16789012-3', '14719610-5'),
+(6, '2024-06-05', 'Aplicar ungüento tres veces al día', '17890123-4', '16786556-9'),
+(7, '2024-07-10', 'Tomar dos tabletas cada mañana', '18901234-8', '17742953-8'),
+(8, '2024-08-15', 'Tomar una pastilla antes de las comidas', '19012345-6', '15768396-9'),
+(9, '2024-09-20', 'Aplicar solución en el área afectada', '10129156-9', '17054607-5'),
+(10, '2024-10-25', 'Tomar una dosis según indicaciones', '15264567-8', '17462754-1');
+
+-- Insertando datos en la tabla Medicamento
+INSERT INTO Medicamento (nombrecomercial, formula, codigoefarmaceutica) VALUES
+('Paracetamol', 'C8H9NO2', 1),
+('Amoxicilina', 'C16H19N3O5S', 2),
+('Omeprazol', 'C17H19N3O3S', 3),
+('Ibuprofeno', 'C13H18O2', 4),
+('Aspirina', 'C9H8O4', 5),
+('Simvastatina', 'C25H38O5', 6),
+('Metformina', 'C4H11N5', 7),
+('Atorvastatina', 'C33H35FN2O5', 8),
+('Lisinopril', 'C21H31N3O5', 9),
+('Losartán', 'C22H23ClN6O', 10);
+
+-- Insertando datos en la tabla Contiene
+INSERT INTO Contiene (codigoreceta, nombrecomermed) VALUES
+(1, 'Paracetamol'),
+(2, 'Amoxicilina'),
+(3, 'Omeprazol'),
+(4, 'Ibuprofeno'),
+(5, 'Aspirina'),
+(6, 'Simvastatina'),
+(7, 'Metformina'),
+(8, 'Atorvastatina'),
+(9, 'Lisinopril'),
+(10, 'Losartán');
+
+-- Insertando datos en la tabla Comprar
+INSERT INTO Comprar (runpaciente, nombrecomermed) VALUES
+('16109196-0', 'Paracetamol'),
+('23456789-0', 'Amoxicilina'),
+('15567890-1', 'Omeprazol'),
+('15678901-2', 'Ibuprofeno'),
+('16789012-3', 'Aspirina'),
+('17890123-4', 'Simvastatina'),
+('18901234-8', 'Metformina'),
+('19012345-6', 'Atorvastatina'),
+('10129156-9', 'Lisinopril'),
+('15264567-8', 'Losartán');
+
+-- Insertando datos en la tabla ExisteEn
+INSERT INTO ExisteEn (nombrecomermed, codigofarmacia, preciomed, cantidadmed) VALUES
+('Paracetamol', 1, 2000, 10),
+('Amoxicilina', 2, 1600, 20),
+('Omeprazol', 3, 1700, 100),
+('Ibuprofeno', 4, 1200, 120),
+('Aspirina', 5, 800, 90),
+('Simvastatina', 6, 900, 10),
+('Metformina', 7, 5000, 100),
+('Atorvastatina', 8, 9000, 92),
+('Lisinopril', 9, 1900, 12),
+('Losartán', 10, 4500, 30);
+
+-- Insertando datos en la tabla FechaSup
+INSERT INTO FechaSup (runsupervisor, fechainiciosupervision, fechaterminosupervision) VALUES
+('13210987-6','2010-01-23','2011-01-23'),
+('18901234-5','2020-02-12','2022-02-12'),
+('19890123-4','2010-03-10','2011-03-10'),
+('18765432-0','2011-04-23','2012-04-23'),
+('18987654-3','2012-05-11','2013-05-11'),
+('14567890-1','2013-06-16','2014-06-16'),
+('18765432-1','2012-07-08','2013-07-08'),
+('19876543-2','2013-08-10','2014-08-10'),
+('15678901-7','2014-09-20','2015-09-20'),
+('12345678-9','2012-10-10','2013-10-10');
+
+-- Insertando datos en la tabla Contrato
+INSERT INTO Contrato (codigocontrato, fechainicio, fechatermino, contenidocontrato, codigoefarmaceutica, codigofarmacia, runsupervisor) VALUES
+(1, '2010-01-23','2011-01-23', 'Contrato de suministro de medicamentos', 1, 1, '13210987-6'),
+(2, '2020-02-12','2022-02-12', 'Contrato de suministro de medicamentos', 2, 2, '18901234-5'),
+(3, '2010-03-10','2011-03-10', 'Contrato de suministro de medicamentos', 3, 3, '19890123-4'),
+(4, '2011-04-23','2012-04-23', 'Contrato de suministro de medicamentos', 4, 4, '18765432-0'),
+(5, '2012-05-11','2013-05-11', 'Contrato de suministro de medicamentos', 5, 5, '18987654-3'),
+(6, '2013-06-16','2014-06-16', 'Contrato de suministro de medicamentos', 6, 6, '14567890-1'),
+(7, '2012-07-08','2013-07-08', 'Contrato de suministro de medicamentos', 7, 7, '18765432-1'),
+(8, '2013-08-10','2014-08-10', 'Contrato de suministro de medicamentos', 8, 8, '19876543-2'),
+(9, '2014-09-20','2015-09-20', 'Contrato de suministro de medicamentos', 9, 9, '15678901-7'),
+(0, '2012-10-10','2013-10-10', 'Contrato de suministro de medicamentos', 10, 10, '12345678-9');
