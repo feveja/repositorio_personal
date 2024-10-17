@@ -1,0 +1,1 @@
+print("Hola desde el terminal de Visual Studio Code")
